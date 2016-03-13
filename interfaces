@@ -1,0 +1,33 @@
+# interfaces(5) file used by ifup(8) and ifdown(8)
+auto lo
+iface lo inet loopback
+
+auto eth0
+allow-hotplug eth0
+iface eth0 inet static
+  address xxx.xxx.xxx.xxx
+  netmask 255.255.xxx.xxx
+  gateway xxx.xxx.xxx.xxx
+  dns-nameservers 8.8.8.8
+
+auto eth1
+iface eth1 inet manual
+
+auto br0
+iface br0 inet static
+  address 10.0.0.1
+  netmask 255.255.255.0
+#  gateway 10.0.0.1
+  broadcast 10.0.0.255
+#  dns-nameservers 140.114.64.1 8.8.8.8
+  bridge_ports eth1
+  bridge_stp off
+  bridge_maxwait 0
+  bridge_fd 0
+
+# create/destroy
+pre-up brctl addbr br0
+ip link set dev br0 up
+post-up brctl setfd br0 0 addif br0 eth1
+post-down brctl1 delbr br0
+
